@@ -17,6 +17,23 @@ export default class ArmClient {
     this.options = options;
   }
   
+  handleResponse(resolve, reject) {
+    return (err, res) => {
+      if (err && !res.ok) {
+        return reject({
+          status: res.status,
+          details: res.body || res.text
+        });
+      }
+      else if (err) {
+        return reject(err);
+      }
+      else {
+        return resolve({ body: res.body, header: res.header });
+      }
+    };
+  }
+  
   _getPath(path, query) {
     return this.options.auth()
       .then((accessToken) => {
@@ -26,20 +43,7 @@ export default class ArmClient {
             .query(query || { })
             .set('Authorization', `Bearer ${accessToken}`)
             .set('Accept', 'application/json')
-            .end((err, res) => {
-              if (err && !res.ok) {
-                return reject({
-                  status: res.status,
-                  details: res.body || res.text
-                });
-              }
-              else if (err) {
-                return reject(err);
-              }
-              else {
-                return resolve({ body: res.body, header: res.header });
-              }
-            });
+            .end(this.handleResponse(resolve, reject));
         });
       });
   }
@@ -50,5 +54,50 @@ export default class ArmClient {
   
   get(resourceGroup, path, query) {
     return this._getPath(`/resourceGroups/${resourceGroup}${path}`, query);
+  }
+  
+  post(resourceGroup, path, body, query) {
+    return this.options.auth()
+      .then((accessToken) => {
+        return new Promise((resolve, reject) => {
+          request
+            .post(`${this.options.managementEndpoint}/subscriptions/${this.options.subscriptionId}/resourceGroups/${resourceGroup}${path}`)
+            .query(query || { })
+            .set('Authorization', `Bearer ${accessToken}`)
+            .set('Accept', 'application/json')
+            .send(body)
+            .end(this.handleResponse(resolve, reject));
+        });
+      });
+  }
+  
+  put(resourceGroup, path, body, query) {
+    return this.options.auth()
+      .then((accessToken) => {
+        return new Promise((resolve, reject) => {
+          request
+            .put(`${this.options.managementEndpoint}/subscriptions/${this.options.subscriptionId}/resourceGroups/${resourceGroup}${path}`)
+            .query(query || { })
+            .set('Authorization', `Bearer ${accessToken}`)
+            .set('Accept', 'application/json')
+            .send(body)
+            .end(this.handleResponse(resolve, reject));
+        });
+      });
+  }
+  
+  del(resourceGroup, path, body, query) {
+    return this.options.auth()
+      .then((accessToken) => {
+        return new Promise((resolve, reject) => {
+          request
+            .del(`${this.options.managementEndpoint}/subscriptions/${this.options.subscriptionId}/resourceGroups/${resourceGroup}${path}`)
+            .query(query || { })
+            .set('Authorization', `Bearer ${accessToken}`)
+            .set('Accept', 'application/json')
+            .send(body)
+            .end(this.handleResponse(resolve, reject));
+        });
+      });
   }
 }
