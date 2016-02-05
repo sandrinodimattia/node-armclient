@@ -37,6 +37,22 @@ const client = ArmClient({
   })
 });
 ```
+
+If you already have a token for the API (eg: through an OAuth2 consent flow), you can also initialize the client with that token:
+
+
+```js
+import ArmClient, { ClientCredentials } from 'armclient';
+
+const client = ArmClient({ 
+  subscriptionId: '111111-2222-3333333',
+  auth: ArmClient.tokenCredentials({
+    accessToken: 'abcdefg'
+  })
+});
+```
+
+
 ### Queries
 
 Get all resources in my subscription:
