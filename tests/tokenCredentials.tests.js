@@ -1,18 +1,18 @@
 var expect = require('chai').expect;
 var assert = require('chai').assert;
 
-import armclient from '../src';
-import tokenCredentials from '../src/authentication/tokenCredentials';
+import ArmClient, { tokenCredentials } from '../src';
+import tokenCredentialsInternal from '../src/authentication/tokenCredentials';
 
 describe('tokenCredentials authentication provider (ES6)', () => {
   it('should be exposed in the module', () => {
-    expect(armclient.tokenCredentials)
-      .to.be.equal(tokenCredentials);
+    expect(tokenCredentials)
+      .to.be.equal(tokenCredentialsInternal);
   });
   
   it('should require an accessToken', () => {
     const fn = () => {
-      armclient.tokenCredentials({ 
+      tokenCredentials({ 
         
       });
     };
@@ -22,7 +22,7 @@ describe('tokenCredentials authentication provider (ES6)', () => {
   });
   
   it('should initialize with options', () => {
-    const cred = armclient.tokenCredentials({ 
+    const cred = tokenCredentials({ 
       accessToken: 'abc'
     });
     

@@ -1,23 +1,23 @@
 var expect = require('chai').expect;
 
-import armclient from '../src';
-import ArmClient from '../src/ArmClient';
+import ArmClient from '../src';
+import ArmClientInternal from '../src/ArmClient';
 import ArgumentError from '../src/errors/ArgumentError';
 
 describe('armclient module (ES6)', () => {
   it('should allow initialization of the ArmClient', () => {
-    const client = armclient({ 
+    const client = ArmClient({ 
       subscriptionId: '123',
       auth: { }
     });
     
     expect(client)
-      .to.be.an.instanceof(ArmClient);
+      .to.be.an.instanceof(ArmClientInternal);
   });
   
   it('should require an authentication provider', () => {
     const fn = () => {
-      armclient({ 
+      ArmClient({ 
         subscriptionId: '123'
       });
     };
@@ -28,8 +28,8 @@ describe('armclient module (ES6)', () => {
   
   it('should require a subscriptionId', () => {
     const fn = () => {
-      armclient({ 
-      auth: { }
+      ArmClient({ 
+        auth: { }
       });
     };
     

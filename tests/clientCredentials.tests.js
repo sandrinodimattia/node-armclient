@@ -1,18 +1,18 @@
 var expect = require('chai').expect;
 var assert = require('chai').assert;
 
-import armclient from '../src';
-import clientCredentials from '../src/authentication/clientCredentials';
+import armclient, { clientCredentials } from '../src';
+import clientCredentialsInternal from '../src/authentication/clientCredentials';
 
 describe('clientCredentials authentication provider (ES6)', () => {
   it('should be exposed in the module', () => {
     expect(armclient.clientCredentials)
-      .to.be.equal(clientCredentials);
+      .to.be.equal(clientCredentialsInternal);
   });
   
   it('should require a tenantId', () => {
     const fn = () => {
-      armclient.clientCredentials({ 
+      clientCredentials({ 
         
       });
     };
@@ -23,7 +23,7 @@ describe('clientCredentials authentication provider (ES6)', () => {
   
   it('should require a clientId', () => {
     const fn = () => {
-      armclient.clientCredentials({ 
+      clientCredentials({ 
         tenantId: 'abc',
       });
     };
@@ -34,7 +34,7 @@ describe('clientCredentials authentication provider (ES6)', () => {
   
   it('should require a clientId', () => {
     const fn = () => {
-      armclient.clientCredentials({ 
+      clientCredentials({ 
         tenantId: 'abc',
       });
     };
@@ -45,7 +45,7 @@ describe('clientCredentials authentication provider (ES6)', () => {
   
   it('should require a servicePrincipalPassword', () => {
     const fn = () => {
-      armclient.clientCredentials({ 
+      clientCredentials({ 
         tenantId: 'abc',
         clientId: 'abc'
       });
@@ -56,7 +56,7 @@ describe('clientCredentials authentication provider (ES6)', () => {
   });
   
   it('should initialize with options', () => {
-    const cred = armclient.clientCredentials({ 
+    const cred = clientCredentials({ 
       tenantId: 'abc',
       clientId: 'abc',
       clientSecret: '123'
@@ -66,7 +66,7 @@ describe('clientCredentials authentication provider (ES6)', () => {
   });
   
   it('should initialize with options and servicePrinicpalPassword', () => {
-    const cred = armclient.clientCredentials({ 
+    const cred = clientCredentials({ 
       tenantId: 'abc',
       clientId: 'abc',
       servicePrincipalPassword: '123'
