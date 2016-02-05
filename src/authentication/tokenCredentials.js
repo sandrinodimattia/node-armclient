@@ -1,10 +1,5 @@
-import jwt from 'jsonwebtoken';
-import adal from 'adal-node';
-import moment from 'moment';
 import Promise from 'bluebird';
-
 import ArgumentError from '../errors/ArgumentError';
-import { AUTHENTICATION_ENDPOINT, MANAGEMENT_ENDPOINT } from '../constants';
 
 export default function tokenCredentials(options) {
   if (!options || !(options instanceof Object)) {
