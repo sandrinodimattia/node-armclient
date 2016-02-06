@@ -32,17 +32,6 @@ describe('clientCredentials authentication provider (ES6)', () => {
       .to.throw('Client Credentials authentication requires a clientId.');
   });
   
-  it('should require a clientId', () => {
-    const fn = () => {
-      clientCredentials({ 
-        tenantId: 'abc',
-      });
-    };
-    
-    expect(fn)
-      .to.throw('Client Credentials authentication requires a clientId.');
-  });
-  
   it('should require a servicePrincipalPassword', () => {
     const fn = () => {
       clientCredentials({ 

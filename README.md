@@ -52,31 +52,81 @@ const client = ArmClient({
 });
 ```
 
+### GET
 
-### Queries
-
-Get all resources in my subscription:
+An example of how you can get resources in your subscription and how you can specify the querystring:
 
 ```js
-client.getResources({ 'api-version': '2015-01-01' })
+client.get('/resourceGroups/lab/providers/Microsoft.Automation/automationAccounts', { 'api-version': '2015-10-31' })
   .then((res) => {
     console.log(res.body);
-    console.log(res.header);
+    console.log(res.headers);
   })
   .catch((err) => {
     console.log(err);
   });
 ```
 
-Get all resources in a specific path (eg: all `automationAccounts`):
+Or you can also specify the full path:
 
 ```js
-client.get('lab', '/providers/Microsoft.Automation/automationAccounts', { 'api-version': '2015-10-31' })
+client.get('https://management.azure.com/subscriptions/111-222-333-444/resourceGroups/lab/providers/Microsoft.Automation/automationAccounts', { 'api-version': '2015-10-31' })
   .then((res) => {
     console.log(res.body);
-    console.log(res.header);
+    console.log(res.headers);
   })
   .catch((err) => {
     console.log(err);
+  });
+```
+
+### POST/PUT/DELETE
+
+For `POST`/`PUT`/`DELETE` the syntax is the same but you also specify the body of the request (the payload you want to send to the API):
+
+```js
+const payload = {
+  name: 'abc',
+  storageAccount: 'def' 
+};
+
+client.post('/resourceGroups/lab/providers/Something/register', { 'api-version': '2015-10-31' }, payload)
+  .then((res) => {
+    console.log(res.body);
+    console.log(res.headers);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+
+client.put('/resourceGroups/lab/providers/Something/register', { 'api-version': '2015-10-31' }, payload)
+  .then((res) => {
+    console.log(res.body);
+    console.log(res.headers);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+
+client.del('/resourceGroups/lab/providers/Something/register', { 'api-version': '2015-10-31' }, payload)
+  .then((res) => {
+    console.log(res.body);
+    console.log(res.headers);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+```
+
+### Provider
+
+You can also create a client which is scoped to a `Resource Group` and a `Resource Provider`, eg:
+
+```js
+client.provider('my-resource-group', 'Microsoft.Compute')
+  .put('/virtualMachines/myvm1', { 'api-version': '2015-01-01' }, payload)
+  .then((res) => {
+    console.log(res.body);
+    console.log(res.headers);
   });
 ```

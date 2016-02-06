@@ -17,9 +17,20 @@ export default class ArmClient {
     this.options = options;
   }
   
+  buildRequest(method, path, query, accessToken) {
+    if (!path || path.indexOf('https://') < 0) {
+     path = `${this.options.managementEndpoint}/subscriptions/${this.options.subscriptionId}${path}`;
+    }
+    
+    return request(method, path)
+      .query(query || { })
+      .set('Authorization', `Bearer ${accessToken}`)
+      .set('Accept', 'application/json');
+  }
+  
   handleResponse(resolve, reject) {
     return (err, res) => {
-      if (err && !res.ok) {
+      if (err && res && !res.ok) {
         return reject({
           status: res.status,
           details: res.body || res.text
@@ -29,73 +40,58 @@ export default class ArmClient {
         return reject(err);
       }
       else {
-        return resolve({ body: res.body, header: res.header });
+        return resolve({ body: res.body, headers: res.header });
       }
     };
   }
   
-  _getPath(path, query) {
+  provider(resourceGroupName, providerName) {
+    return {
+      get: (path, query) => this.get(`/resourceGroups/${resourceGroupName}/providers/${providerName}${path}`, query),
+      post: (path, query, payload) => this.post(`/resourceGroups/${resourceGroupName}/providers/${providerName}${path}`, query, payload),
+      put: (path, query, payload) => this.put(`/resourceGroups/${resourceGroupName}/providers/${providerName}${path}`, query, payload),
+      del: (path, query, payload) => this.del(`/resourceGroups/${resourceGroupName}/providers/${providerName}${path}`, query, payload)
+    };
+  }
+  
+  get(path, query) {
     return this.options.auth()
       .then((accessToken) => {
         return new Promise((resolve, reject) => {
-          request
-            .get(`${this.options.managementEndpoint}/subscriptions/${this.options.subscriptionId}${path}`)
-            .query(query || { })
-            .set('Authorization', `Bearer ${accessToken}`)
-            .set('Accept', 'application/json')
+          this.buildRequest('GET', path, query, accessToken)
             .end(this.handleResponse(resolve, reject));
         });
       });
   }
   
-  getResources(query) {
-    return this._getPath('/resources', query);
-  }
-  
-  get(resourceGroup, path, query) {
-    return this._getPath(`/resourceGroups/${resourceGroup}${path}`, query);
-  }
-  
-  post(resourceGroup, path, body, query) {
+  post(path, query, payload) {
     return this.options.auth()
       .then((accessToken) => {
         return new Promise((resolve, reject) => {
-          request
-            .post(`${this.options.managementEndpoint}/subscriptions/${this.options.subscriptionId}/resourceGroups/${resourceGroup}${path}`)
-            .query(query || { })
-            .set('Authorization', `Bearer ${accessToken}`)
-            .set('Accept', 'application/json')
-            .send(body)
+          this.buildRequest('POST', path, query, accessToken)
+            .send(payload || { })
             .end(this.handleResponse(resolve, reject));
         });
       });
   }
   
-  put(resourceGroup, path, body, query) {
+  put(path, query, payload) {
     return this.options.auth()
       .then((accessToken) => {
         return new Promise((resolve, reject) => {
-          request
-            .put(`${this.options.managementEndpoint}/subscriptions/${this.options.subscriptionId}/resourceGroups/${resourceGroup}${path}`)
-            .query(query || { })
-            .set('Authorization', `Bearer ${accessToken}`)
-            .set('Accept', 'application/json')
-            .send(body)
+          this.buildRequest('PUT', path, query, accessToken)
+            .send(payload || { })
             .end(this.handleResponse(resolve, reject));
         });
       });
   }
   
-  del(resourceGroup, path, body, query) {
+  del(path, query, payload) {
     return this.options.auth()
       .then((accessToken) => {
         return new Promise((resolve, reject) => {
-          request
-            .del(`${this.options.managementEndpoint}/subscriptions/${this.options.subscriptionId}/resourceGroups/${resourceGroup}${path}`)
-            .query(query || { })
-            .set('Authorization', `Bearer ${accessToken}`)
-            .set('Accept', 'application/json')
-            .send(body)
+          this.buildRequest('DELETE', path, query, accessToken)
+            .send(payload || { })
             .end(this.handleResponse(resolve, reject));
         });
       });
