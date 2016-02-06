@@ -48,7 +48,7 @@ export default function clientCredentials(options) {
       }
       
       const context = new adal.AuthenticationContext(`${options.authenticationEndpoint}/${options.tenantId}`);
-      context.acquireTokenWithClientCredentials(`${options.managementEndpoint}/`, options.clientId, options.servicePrincipalPassword, (err, res) => {
+      context.acquireTokenWithClientCredentials(`${options.managementEndpoint}/`, options.clientId, options.clientSecret || options.servicePrincipalPassword, (err, res) => {
         if (err) {
           return reject(err);
         }
