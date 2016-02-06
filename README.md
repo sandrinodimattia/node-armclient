@@ -26,11 +26,11 @@ var client = ArmClient({
 ES6:
 
 ```js
-import ArmClient, { ClientCredentials } from 'armclient';
+import ArmClient, { clientCredentials } from 'armclient';
 
 const client = ArmClient({ 
   subscriptionId: '111111-2222-3333333',
-  auth: ArmClient.clientCredentials({
+  auth: clientCredentials({
     tenantId: '444444-555555-666666666',
     clientId: '777777-888888-999999999',
     clientSecret: 'aaaabbbbbccccc' // or servicePrincipalPassword
@@ -42,7 +42,7 @@ If you already have a token for the API (eg: through an OAuth2 consent flow), yo
 
 
 ```js
-import ArmClient, { ClientCredentials } from 'armclient';
+import ArmClient, { tokenCredentials } from 'armclient';
 
 const client = ArmClient({ 
   subscriptionId: '111111-2222-3333333',
